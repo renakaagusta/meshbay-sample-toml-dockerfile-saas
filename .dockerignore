@@ -1,0 +1,12 @@
+.git
+node_modules
+**/node_modules
+.next
+**/.next
+*.log
+.DS_Store
+opencode.json
+.env
+.env.*
+api/server
+api/migrate

@@ -1,0 +1,6 @@
+{
+  "name": "meshbay-sample-saas-worker",
+  "private": true,
+  "type": "module",
+  "description": "Redis queue consumer and daily summary cron command of the Meshbay saas sample"
+}

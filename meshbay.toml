@@ -1,0 +1,74 @@
+# Meshbay manifest for the "saas" fixture: three services from one repository.
+#
+# Postgres and Redis are Meshbay databases attached to the project, so their
+# connection strings arrive as project variables (DATABASE_URL, REDIS_URL) and
+# never live in this file. SIGNING_SECRET is a sealed variable, which is why it
+# is declared with an empty value.
+#
+# API_URL is left empty on purpose: Meshbay names a manifest service
+# `<project>-<service>` on the private network and injects MESHBAY_PROJECT, so
+# the services derive `http://<project>-api.internal:8080` at runtime. A project
+# variable API_URL overrides that.
+
+[[services]]
+name = "web"
+ports = ["3000"]
+depends_on = ["api"]
+
+[services.build]
+dockerfile = "web/Dockerfile"
+
+[services.resources]
+cpus = 1
+memory = "512M"
+
+[services.healthcheck]
+path = "/health"
+interval = "10s"
+timeout = "5s"
+start_period = "30s"
+retries = 5
+
+[services.env]
+API_URL = ""
+
+[[services]]
+name = "api"
+# The schema change runs once per deploy, before the new revision starts. The
+# api binary itself never creates tables.
+pre_deploy = "/app/migrate"
+ports = ["8080"]
+replicas = 2
+
+[services.build]
+dockerfile = "api/Dockerfile"
+
+[services.resources]
+cpus = 1
+memory = "512M"
+
+[services.healthcheck]
+path = "/health"
+interval = "10s"
+timeout = "3s"
+start_period = "20s"
+retries = 5
+
+[services.env]
+DATABASE_URL = ""
+REDIS_URL = ""
+SIGNING_SECRET = ""
+
+[[services]]
+name = "worker"
+
+[services.build]
+dockerfile = "worker/Dockerfile"
+
+[services.resources]
+cpus = 0.5
+memory = "256M"
+
+[services.env]
+REDIS_URL = ""
+API_URL = ""

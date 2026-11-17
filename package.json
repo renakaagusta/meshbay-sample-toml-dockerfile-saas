@@ -1,0 +1,28 @@
+{
+  "name": "meshbay-sample-saas",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  },
+  "description": "Meshbay fixture: Next.js web, Go api and Node worker from one repo, with Postgres and Redis",
+  "scripts": {
+    "build": "next build web",
+    "start": "next start web",
+    "worker": "node worker/src/worker.js",
+    "summary": "node worker/src/daily-summary.js",
+    "check": "tsc -p web --noEmit && node --check worker/src/worker.js && node --check worker/src/daily-summary.js && node --check worker/src/api-url.js"
+  },
+  "dependencies": {
+    "ioredis": "5.6.1",
+    "next": "15.5.29",
+    "react": "19.2.9",
+    "react-dom": "19.2.9"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.0",
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0",
+    "typescript": "5.9.2"
+  }
+}
